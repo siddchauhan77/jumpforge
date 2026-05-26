@@ -2,9 +2,14 @@
 
 A tiny browser platformer inspired by classic side-scrolling mechanics, with a built-in level builder.
 
+## Public Links
+
+- Play: <https://make-a-game-like-mario-but.vercel.app>
+- GitHub: <https://github.com/siddchauhan77/jumpforge>
+
 ## Play
 
-The local server is running at:
+For local play:
 
 ```text
 http://127.0.0.1:8080/index.html
