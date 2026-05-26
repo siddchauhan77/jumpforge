@@ -33,11 +33,13 @@ This is a static browser game. To share it, send someone `index.html` or upload 
 
 - `A/D` or arrow keys: move
 - `W`, `Up`, or `Space`: jump
+- `F`: shoot after collecting a fire flower
+- `Esc`: return home
 - `B`: build mode
 - `P`: play mode
-- `1-8`: choose a build tool
+- `1-9`, `0`, `-`: choose a build tool
 - Click or drag on the canvas in build mode to paint tiles
 
 ## Builder
 
-Use the right panel to place ground, bricks, prize blocks, coins, spikes, enemies, and a goal flag. Levels can be saved to local storage or exported as a shareable level code.
+Use the right panel to place ground, bricks, prize blocks, coins, spikes, enemies, powerups, and a goal flag. Levels can be saved to local storage or exported as a shareable level code.

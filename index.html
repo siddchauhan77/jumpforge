@@ -136,6 +136,15 @@
       color: white;
     }
 
+    body.menu .main {
+      grid-template-columns: minmax(0, 1180px);
+      justify-content: center;
+    }
+
+    body.menu aside {
+      display: none;
+    }
+
     .main {
       width: min(1500px, 100%);
       margin: 0 auto;
@@ -165,6 +174,12 @@
       aspect-ratio: 16 / 9;
       background: var(--sky);
       image-rendering: pixelated;
+    }
+
+    body.menu canvas {
+      aspect-ratio: auto;
+      height: min(680px, calc(100vh - 170px));
+      min-height: 520px;
     }
 
     .hud {
@@ -298,6 +313,21 @@
       background: linear-gradient(90deg, #172033 0 20%, transparent 20%), linear-gradient(#45d071 0 50%, white 50% 100%);
     }
 
+    .icon-mushroom {
+      border-radius: 50% 50% 8px 8px;
+      background: radial-gradient(circle at 50% 30%, #fff 0 15%, transparent 16%), #e4482f;
+    }
+
+    .icon-flower {
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffd85e 0 20%, #e4482f 21% 48%, #45d071 49% 100%);
+    }
+
+    .icon-star {
+      background: #ffd85e;
+      clip-path: polygon(50% 2%, 62% 35%, 98% 35%, 68% 55%, 80% 92%, 50% 70%, 20% 92%, 32% 55%, 2% 35%, 38% 35%);
+    }
+
     .tool small {
       position: absolute;
       bottom: 2px;
@@ -366,6 +396,77 @@
       transform: translate(-50%, 4px);
     }
 
+    .menu-screen {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(18px, 4vw, 54px);
+      background: linear-gradient(rgba(123, 200, 255, .12), rgba(23, 32, 51, .1));
+    }
+
+    body.menu .menu-screen {
+      display: flex;
+    }
+
+    .menu-panel {
+      width: min(620px, 100%);
+      background: rgba(255, 253, 246, .94);
+      border: 3px solid #172033;
+      border-radius: 8px;
+      box-shadow: 0 16px 0 rgba(23, 32, 51, .2);
+      padding: clamp(18px, 4vw, 34px);
+      text-align: center;
+    }
+
+    .menu-panel h2 {
+      margin: 0;
+      font-size: clamp(34px, 8vw, 72px);
+      line-height: .9;
+      letter-spacing: 0;
+    }
+
+    .menu-panel p {
+      margin: 14px auto 0;
+      max-width: 460px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .menu-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .power-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+      text-align: left;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .power-card {
+      border: 2px solid rgba(45, 49, 66, .2);
+      border-radius: 8px;
+      background: white;
+      padding: 9px;
+    }
+
+    .power-card b {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+
     .mobile-pad {
       display: none;
       grid-template-columns: 1fr 1fr 1fr;
@@ -400,6 +501,16 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .menu-actions,
+      .power-strip {
+        grid-template-columns: 1fr;
+      }
+
+      body.menu canvas {
+        height: 520px;
+        min-height: 520px;
+      }
+
       .mobile-pad {
         display: grid;
       }
@@ -411,6 +522,7 @@
     <header>
       <h1><span class="mark">J</span> Jumpforge</h1>
       <div class="top-controls">
+        <button class="btn" id="homeBtn">Home</button>
         <button class="btn primary" id="playBtn">Play</button>
         <button class="btn blue" id="editBtn">Build</button>
         <button class="btn" id="resetBtn">Reset Run</button>
@@ -422,6 +534,21 @@
       <section class="game-wrap">
         <div class="stage-frame">
           <canvas id="game" width="1280" height="720" aria-label="Jumpforge game canvas"></canvas>
+          <div class="menu-screen" id="menuScreen">
+            <div class="menu-panel">
+              <h2>Jumpforge</h2>
+              <p>Run, jump, grab powerups, and build your own side-scrolling courses.</p>
+              <div class="menu-actions">
+                <button class="btn primary" id="menuPlayBtn">Play Course</button>
+                <button class="btn blue" id="menuBuildBtn">Build Level</button>
+              </div>
+              <div class="power-strip">
+                <div class="power-card"><b>Mushroom</b>Grow bigger and survive one hit.</div>
+                <div class="power-card"><b>Fire Flower</b>Press F to shoot fireballs.</div>
+                <div class="power-card"><b>Star</b>Short invincible speed burst.</div>
+              </div>
+            </div>
+          </div>
           <div class="toast" id="toast">Saved</div>
         </div>
 
@@ -429,6 +556,7 @@
           <div class="stat"><b>Mode</b><span id="modeStat">Play</span></div>
           <div class="stat"><b>Coins</b><span id="coinStat">0</span></div>
           <div class="stat"><b>Time</b><span id="timeStat">0.0</span></div>
+          <div class="stat"><b>Power</b><span id="powerStat">Small</span></div>
           <div class="stat"><b>Tool</b><span id="toolStat">Ground</span></div>
           <div class="stat"><b>Status</b><span id="statusStat">Ready</span></div>
         </div>
@@ -455,9 +583,10 @@
           <div class="help">
             <div><span class="key">A/D</span> or <span class="key">Arrows</span>: run</div>
             <div><span class="key">W</span>, <span class="key">Up</span>, or <span class="key">Space</span>: jump</div>
+            <div><span class="key">F</span>: shoot fireballs after flower</div>
             <div><span class="key">B</span>: build mode, <span class="key">P</span>: play mode</div>
             <div><span class="key">Click</span> canvas in build mode to paint tiles</div>
-            <div><span class="key">1-8</span>: pick builder tool</div>
+            <div><span class="key">1-9, 0, -</span>: pick builder tool</div>
           </div>
         </section>
 
@@ -494,7 +623,10 @@
       COIN: 4,
       SPIKE: 5,
       ENEMY: 6,
-      GOAL: 7
+      GOAL: 7,
+      MUSHROOM: 8,
+      FLOWER: 9,
+      STAR: 10
     };
 
     const tileInfo = [
@@ -505,12 +637,15 @@
       { id: Tile.COIN, name: "Coin", key: "5", className: "icon-coin" },
       { id: Tile.SPIKE, name: "Spike", key: "6", className: "icon-spike" },
       { id: Tile.ENEMY, name: "Enemy", key: "7", className: "icon-enemy" },
-      { id: Tile.GOAL, name: "Goal", key: "8", className: "icon-goal" }
+      { id: Tile.GOAL, name: "Goal", key: "8", className: "icon-goal" },
+      { id: Tile.MUSHROOM, name: "Mushroom", key: "9", className: "icon-mushroom" },
+      { id: Tile.FLOWER, name: "Flower", key: "0", className: "icon-flower" },
+      { id: Tile.STAR, name: "Star", key: "-", className: "icon-star" }
     ];
 
     const solidTiles = new Set([Tile.GROUND, Tile.BRICK, Tile.QUESTION]);
     const state = {
-      mode: "play",
+      mode: "menu",
       selected: Tile.GROUND,
       map: createBlankMap(),
       camX: 0,
@@ -524,9 +659,12 @@
       won: false,
       dead: false,
       enemies: [],
+      powerups: [],
+      fireballs: [],
       particles: [],
       collected: new Set(),
-      bumped: new Set()
+      bumped: new Set(),
+      fired: false
     };
 
     const player = {
@@ -539,7 +677,9 @@
       facing: 1,
       onGround: false,
       jumpGrace: 0,
-      jumpBuffer: 0
+      jumpBuffer: 0,
+      power: "small",
+      starTime: 0
     };
 
     function createBlankMap() {
@@ -562,6 +702,9 @@
       map[ROWS - 8][33] = Tile.QUESTION;
       map[ROWS - 5][51] = Tile.QUESTION;
       map[ROWS - 9][72] = Tile.QUESTION;
+      map[ROWS - 3][6] = Tile.MUSHROOM;
+      map[ROWS - 8][25] = Tile.FLOWER;
+      map[ROWS - 10][65] = Tile.STAR;
 
       [8, 9, 10, 21, 26, 27, 28, 45, 46, 63, 64, 65, 79, 80].forEach(x => {
         map[ROWS - 4][x] = Tile.COIN;
@@ -617,10 +760,11 @@
     function setMode(mode) {
       state.mode = mode;
       if (mode === "play") resetRun(false);
+      document.body.classList.toggle("menu", mode === "menu");
       document.getElementById("playBtn").classList.toggle("primary", mode === "play");
       document.getElementById("editBtn").classList.toggle("blue", mode === "edit");
-      document.getElementById("modeStat").textContent = mode === "play" ? "Play" : "Build";
-      state.status = mode === "play" ? "Ready" : "Paint";
+      document.getElementById("modeStat").textContent = mode === "play" ? "Play" : mode === "edit" ? "Build" : "Home";
+      state.status = mode === "play" ? "Ready" : mode === "edit" ? "Paint" : "Choose";
     }
 
     function resetRun(full = true) {
@@ -632,6 +776,10 @@
       player.onGround = false;
       player.jumpGrace = 0;
       player.jumpBuffer = 0;
+      player.power = "small";
+      player.starTime = 0;
+      player.w = 26;
+      player.h = 34;
       state.camX = 0;
       state.startTime = performance.now();
       state.elapsed = 0;
@@ -643,6 +791,9 @@
       state.bumped = new Set();
       state.particles = [];
       state.enemies = [];
+      state.powerups = [];
+      state.fireballs = [];
+      state.fired = false;
       state.totalCoins = countTiles(Tile.COIN);
       forEachTile((tile, x, y) => {
         if (tile === Tile.ENEMY) {
@@ -654,6 +805,9 @@
             vx: x % 2 ? -50 : 50,
             alive: true
           });
+        }
+        if (isPowerTile(tile)) {
+          state.powerups.push(createPowerup(tile, x * TILE + 8, y * TILE + 8, false));
         }
       });
       if (full) showToast("Run reset");
@@ -729,9 +883,40 @@
       const key = x + "," + y;
       if (tile !== Tile.QUESTION || state.bumped.has(key)) return;
       state.bumped.add(key);
-      state.coins += 1;
-      spawnParticles(x * TILE + TILE / 2, y * TILE, "#ffd85e", 10);
+      const prizes = [Tile.MUSHROOM, Tile.FLOWER, Tile.STAR, Tile.COIN];
+      const prize = prizes[Math.abs((x * 7 + y * 13) % prizes.length)];
+      if (prize === Tile.COIN) {
+        state.coins += 1;
+        spawnParticles(x * TILE + TILE / 2, y * TILE, "#ffd85e", 10);
+      } else {
+        state.powerups.push(createPowerup(prize, x * TILE + 8, y * TILE - 10, true));
+        spawnParticles(x * TILE + TILE / 2, y * TILE, powerColor(prize), 10);
+      }
       state.status = "Prize";
+    }
+
+    function isPowerTile(tile) {
+      return tile === Tile.MUSHROOM || tile === Tile.FLOWER || tile === Tile.STAR;
+    }
+
+    function createPowerup(type, x, y, moving) {
+      return {
+        type,
+        x,
+        y,
+        w: 24,
+        h: 24,
+        vx: moving ? 70 : 0,
+        vy: moving ? -80 : 0,
+        alive: true,
+        moving
+      };
+    }
+
+    function powerColor(type) {
+      if (type === Tile.MUSHROOM) return "#e4482f";
+      if (type === Tile.FLOWER) return "#ff7a30";
+      return "#ffd85e";
     }
 
     function spawnParticles(x, y, color, amount) {
@@ -765,25 +950,33 @@
         if (player.jumpBuffer > 0) player.jumpBuffer -= dt;
         if (player.jumpGrace > 0) player.jumpGrace -= dt;
 
-        const target = right ? 250 : left ? -250 : 0;
+        if (player.starTime > 0) player.starTime = Math.max(0, player.starTime - dt);
+
+        const maxRun = player.starTime > 0 ? 330 : player.power === "fire" ? 275 : 250;
+        const target = right ? maxRun : left ? -maxRun : 0;
         if (target !== 0) player.facing = Math.sign(target);
         const accel = player.onGround ? 1750 : 950;
         player.vx += clamp(target - player.vx, -accel * dt, accel * dt);
         if (!left && !right && player.onGround) player.vx *= Math.pow(0.0008, dt);
 
         if (player.jumpBuffer > 0 && (player.onGround || player.jumpGrace > 0)) {
-          player.vy = -620;
+          player.vy = player.power === "big" || player.power === "fire" ? -660 : -620;
           player.onGround = false;
           player.jumpGrace = 0;
           player.jumpBuffer = 0;
           spawnParticles(player.x + player.w / 2, player.y + player.h, "#ffffff", 6);
         }
 
+        if ((state.keys.has("f") || state.keys.has("F")) && !state.fired) shootFireball();
+        if (!state.keys.has("f") && !state.keys.has("F")) state.fired = false;
+
         player.vy += 1450 * dt;
         player.vy = Math.min(player.vy, 900);
         moveWithCollision(player, dt);
         player.x = clamp(player.x, 0, COLS * TILE - player.w);
 
+        updatePowerups(dt);
+        updateFireballs(dt);
         handleTiles();
         updateEnemies(dt);
         updateCamera(dt);
@@ -809,10 +1002,109 @@
             state.status = "Coin";
             spawnParticles(x * TILE + TILE / 2, y * TILE + TILE / 2, "#ffd85e", 8);
           }
-          if (tile === Tile.SPIKE) die("Ouch");
+          if (tile === Tile.SPIKE && player.starTime <= 0) takeDamage("Ouch");
           if (tile === Tile.GOAL) win();
         }
       }
+    }
+
+    function updatePowerups(dt) {
+      for (const item of state.powerups) {
+        if (!item.alive) continue;
+        if (item.moving) {
+          item.vy += 900 * dt;
+          item.x += item.vx * dt;
+          if (rectHitsSolid(item).length) {
+            item.x -= item.vx * dt;
+            item.vx *= -1;
+          }
+          item.y += item.vy * dt;
+          const hits = rectHitsSolid(item);
+          if (hits.length && item.vy > 0) {
+            item.y = hits[0].y * TILE - item.h - 0.01;
+            item.vy = 0;
+          }
+        }
+        if (overlaps(player, item)) {
+          item.alive = false;
+          applyPowerup(item.type);
+        }
+      }
+    }
+
+    function applyPowerup(type) {
+      if (type === Tile.MUSHROOM) {
+        growPlayer();
+        player.power = player.power === "fire" ? "fire" : "big";
+        state.status = "Big";
+      } else if (type === Tile.FLOWER) {
+        growPlayer();
+        player.power = "fire";
+        state.status = "Fire";
+      } else if (type === Tile.STAR) {
+        player.starTime = 8;
+        state.status = "Star";
+      }
+      spawnParticles(player.x + player.w / 2, player.y + player.h / 2, powerColor(type), 18);
+    }
+
+    function growPlayer() {
+      if (player.h >= 46) return;
+      player.y -= 12;
+      player.h = 46;
+      player.w = 30;
+    }
+
+    function shrinkPlayer() {
+      if (player.h <= 34) return;
+      player.y += 12;
+      player.h = 34;
+      player.w = 26;
+      player.power = "small";
+    }
+
+    function shootFireball() {
+      state.fired = true;
+      if (player.power !== "fire" || state.fireballs.filter(ball => ball.alive).length >= 3) return;
+      state.fireballs.push({
+        x: player.facing > 0 ? player.x + player.w : player.x - 10,
+        y: player.y + player.h * 0.45,
+        w: 10,
+        h: 10,
+        vx: player.facing * 430,
+        vy: -80,
+        alive: true,
+        life: 2.2
+      });
+      state.status = "Fire";
+    }
+
+    function updateFireballs(dt) {
+      for (const ball of state.fireballs) {
+        if (!ball.alive) continue;
+        ball.life -= dt;
+        ball.vy += 1000 * dt;
+        ball.x += ball.vx * dt;
+        if (rectHitsSolid(ball).length) {
+          ball.alive = false;
+          spawnParticles(ball.x, ball.y, "#ff7a30", 8);
+          continue;
+        }
+        ball.y += ball.vy * dt;
+        if (rectHitsSolid(ball).length) {
+          ball.y -= ball.vy * dt;
+          ball.vy = -260;
+        }
+        for (const enemy of state.enemies) {
+          if (enemy.alive && overlaps(ball, enemy)) {
+            enemy.alive = false;
+            ball.alive = false;
+            spawnParticles(enemy.x + enemy.w / 2, enemy.y + enemy.h / 2, "#ff7a30", 14);
+          }
+        }
+        if (ball.life <= 0) ball.alive = false;
+      }
+      state.fireballs = state.fireballs.filter(ball => ball.alive);
     }
 
     function updateEnemies(dt) {
@@ -836,16 +1128,27 @@
 
         if (overlaps(player, enemy)) {
           const stomping = player.vy > 80 && player.y + player.h - enemy.y < 18;
-          if (stomping) {
+          if (stomping || player.starTime > 0) {
             enemy.alive = false;
-            player.vy = -430;
+            if (stomping) player.vy = -430;
             state.status = "Stomp";
             spawnParticles(enemy.x + enemy.w / 2, enemy.y + enemy.h / 2, "#7a3a1e", 10);
           } else {
-            die("Hit");
+            takeDamage("Hit");
           }
         }
       }
+    }
+
+    function takeDamage(status) {
+      if (player.starTime > 0) return;
+      if (player.power === "big" || player.power === "fire") {
+        shrinkPlayer();
+        state.status = "Small";
+        spawnParticles(player.x + player.w / 2, player.y + player.h / 2, "#ffffff", 12);
+        return;
+      }
+      die(status);
     }
 
     function updateCamera(dt) {
@@ -893,7 +1196,9 @@
       ctx.save();
       ctx.translate(-Math.floor(state.camX), 0);
       drawTiles();
+      if (state.mode !== "edit") drawPowerups();
       drawEnemies();
+      drawFireballs();
       drawPlayer();
       drawParticles();
       ctx.restore();
@@ -947,6 +1252,7 @@
           const key = x + "," + y;
           if (tile === Tile.EMPTY) continue;
           if (tile === Tile.COIN && state.collected.has(key)) continue;
+          if (isPowerTile(tile) && state.mode !== "edit") continue;
           drawTile(tile, px, py, key);
         }
       }
@@ -1014,6 +1320,56 @@
         ctx.fillRect(x + 10, y + 4, 24, 17);
         ctx.fillStyle = "white";
         ctx.fillRect(x + 10, y + 21, 24, 17);
+      } else if (isPowerTile(tile)) {
+        drawPowerupBody(tile, x + 8, y + 8, 24, 24);
+      }
+    }
+
+    function drawPowerups() {
+      for (const item of state.powerups) {
+        if (!item.alive) continue;
+        drawPowerupBody(item.type, item.x, item.y, item.w, item.h);
+      }
+    }
+
+    function drawPowerupBody(type, x, y, w, h) {
+      if (type === Tile.MUSHROOM) {
+        ctx.fillStyle = "#e4482f";
+        roundRect(x, y, w, h * 0.7, 10);
+        ctx.fillStyle = "#fff7e4";
+        ctx.fillRect(x + 5, y + 6, 5, 5);
+        ctx.fillRect(x + w - 10, y + 6, 5, 5);
+        ctx.fillStyle = "#f2b77e";
+        ctx.fillRect(x + 5, y + h * 0.55, w - 10, h * 0.38);
+      } else if (type === Tile.FLOWER) {
+        ctx.fillStyle = "#45d071";
+        ctx.fillRect(x + w / 2 - 2, y + h / 2, 4, h / 2);
+        ctx.fillStyle = "#e4482f";
+        ctx.beginPath();
+        ctx.arc(x + w / 2, y + h / 2, w * 0.38, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#ffd85e";
+        ctx.beginPath();
+        ctx.arc(x + w / 2, y + h / 2, w * 0.18, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (type === Tile.STAR) {
+        ctx.fillStyle = "#ffd85e";
+        ctx.beginPath();
+        const cx = x + w / 2;
+        const cy = y + h / 2;
+        for (let i = 0; i < 10; i++) {
+          const radius = i % 2 === 0 ? w * 0.48 : w * 0.22;
+          const angle = -Math.PI / 2 + i * Math.PI / 5;
+          const px = cx + Math.cos(angle) * radius;
+          const py = cy + Math.sin(angle) * radius;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = "#172033";
+        ctx.fillRect(cx - 5, cy - 2, 3, 3);
+        ctx.fillRect(cx + 3, cy - 2, 3, 3);
       }
     }
 
@@ -1035,10 +1391,26 @@
       ctx.fillRect(x + w - 9, y + 10, 3, 3);
     }
 
+    function drawFireballs() {
+      for (const ball of state.fireballs) {
+        ctx.fillStyle = "#ff7a30";
+        ctx.beginPath();
+        ctx.arc(ball.x + ball.w / 2, ball.y + ball.h / 2, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#ffd85e";
+        ctx.beginPath();
+        ctx.arc(ball.x + ball.w / 2, ball.y + ball.h / 2, 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
     function drawPlayer() {
       if (state.dead) return;
       const x = player.x;
       const y = player.y;
+      if (player.starTime > 0) {
+        ctx.globalAlpha = 0.75 + Math.sin(performance.now() / 55) * 0.2;
+      }
       ctx.save();
       if (player.facing < 0) {
         ctx.translate(x + player.w / 2, 0);
@@ -1057,6 +1429,7 @@
       ctx.fillRect(x + 4, y + 31, 8, 5);
       ctx.fillRect(x + 16, y + 31, 8, 5);
       ctx.restore();
+      ctx.globalAlpha = 1;
     }
 
     function drawParticles() {
@@ -1125,6 +1498,8 @@
     function updateStats() {
       document.getElementById("coinStat").textContent = state.coins + "/" + state.totalCoins;
       document.getElementById("timeStat").textContent = state.elapsed.toFixed(1);
+      const power = player.starTime > 0 ? "Star" : player.power === "fire" ? "Fire" : player.power === "big" ? "Big" : "Small";
+      document.getElementById("powerStat").textContent = power;
       document.getElementById("statusStat").textContent = state.status;
     }
 
@@ -1141,39 +1516,31 @@
     }
 
     function encodeLevel() {
-      const flat = state.map.map(row => row.join("")).join("");
-      let packed = "";
-      let last = flat[0];
-      let count = 0;
-      for (const char of flat) {
-        if (char === last && count < 99) {
-          count++;
-        } else {
-          packed += last + count.toString().padStart(2, "0");
-          last = char;
-          count = 1;
-        }
-      }
-      packed += last + count.toString().padStart(2, "0");
-      return btoa(JSON.stringify({ v: 1, cols: COLS, rows: ROWS, data: packed }));
+      return btoa(JSON.stringify({ v: 2, cols: COLS, rows: ROWS, data: state.map.flat() }));
     }
 
     function decodeLevel(code) {
       const parsed = JSON.parse(atob(code.trim()));
-      if (!parsed || parsed.v !== 1 || parsed.cols !== COLS || parsed.rows !== ROWS) {
+      if (!parsed || parsed.cols !== COLS || parsed.rows !== ROWS) {
         throw new Error("Wrong level format");
       }
-      let flat = "";
-      for (let i = 0; i < parsed.data.length; i += 3) {
-        const value = parsed.data[i];
-        const count = Number(parsed.data.slice(i + 1, i + 3));
-        flat += value.repeat(count);
+      let flat = [];
+      if (Array.isArray(parsed.data)) {
+        flat = parsed.data.map(Number);
+      } else {
+        let oldFlat = "";
+        for (let i = 0; i < parsed.data.length; i += 3) {
+          const value = parsed.data[i];
+          const count = Number(parsed.data.slice(i + 1, i + 3));
+          oldFlat += value.repeat(count);
+        }
+        flat = oldFlat.split("").map(Number);
       }
-      if (flat.length !== COLS * ROWS) throw new Error("Wrong level size");
+      if (flat.length !== COLS * ROWS || flat.some(value => Number.isNaN(value))) throw new Error("Wrong level size");
       const map = createBlankMap();
       for (let y = 0; y < ROWS; y++) {
         for (let x = 0; x < COLS; x++) {
-          map[y][x] = Number(flat[y * COLS + x]);
+          map[y][x] = flat[y * COLS + x];
         }
       }
       return map;
@@ -1230,10 +1597,12 @@
       if (["ArrowLeft", "ArrowRight", "ArrowUp", " "].includes(event.key)) event.preventDefault();
       state.keys.add(event.key);
       if (isJumpKey(event.key)) player.jumpBuffer = 0.12;
+      if (event.key === "f" || event.key === "F") shootFireball();
+      if (event.key === "Escape") setMode("menu");
       if (event.key === "b" || event.key === "B") setMode("edit");
       if (event.key === "p" || event.key === "P") setMode("play");
-      const num = Number(event.key);
-      if (num >= 1 && num <= tileInfo.length) selectTool(tileInfo[num - 1].id);
+      const tool = tileInfo.find(item => item.key === event.key);
+      if (tool) selectTool(tool.id);
     });
 
     document.addEventListener("keyup", event => state.keys.delete(event.key));
@@ -1261,8 +1630,11 @@
       button.addEventListener("pointerleave", () => state.keys.delete(key));
     });
 
+    document.getElementById("homeBtn").addEventListener("click", () => setMode("menu"));
     document.getElementById("playBtn").addEventListener("click", () => setMode("play"));
     document.getElementById("editBtn").addEventListener("click", () => setMode("edit"));
+    document.getElementById("menuPlayBtn").addEventListener("click", () => setMode("play"));
+    document.getElementById("menuBuildBtn").addEventListener("click", () => setMode("edit"));
     document.getElementById("resetBtn").addEventListener("click", () => resetRun(true));
     document.getElementById("saveBtn").addEventListener("click", saveLevel);
     document.getElementById("clearBtn").addEventListener("click", () => {
@@ -1307,7 +1679,7 @@
 
     setupTools();
     loadSavedOrDemo();
-    setMode("play");
+    setMode("menu");
     requestAnimationFrame(loop);
   </script>
 </body>
